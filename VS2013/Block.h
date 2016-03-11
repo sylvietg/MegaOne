@@ -27,9 +27,11 @@ class Block{
 	private:
 		static const char* filepath;
 		static GLuint boardTexture;
+		//static GLuint sidewalkGrassTexture;
 		static Shader *blockShaderptr;
 		static vector<glm::vec3> blockCoordinates;
 		static vector<GLuint> blockIndices;
+		GLuint numInd;
 		GLuint VAO, VBO, EBO;
 		void createVAO();
 		GLuint shader_program;
