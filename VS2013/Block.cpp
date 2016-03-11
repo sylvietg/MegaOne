@@ -1,11 +1,13 @@
 #include "Block.h"
 
 
-const char* Block::filepath = "../ThirdParty/Simple OpenGL Image Library/img_test.png";
+const char* Block::filepath1 = "../ThirdParty/Simple OpenGL Image Library/img_cheryl.jpg";
+const char* Block::filepath2 = "../ThirdParty/Simple OpenGL Image Library/img_test.png";
 vector<glm::vec3> Block::blockCoordinates;
 vector<GLuint> Block::blockIndices;
 Shader * Block::blockShaderptr = NULL;
 GLuint Block::boardTexture;
+GLuint Block::sidewalkGrassTexture;
 
 Block::Block(){
 
@@ -43,7 +45,8 @@ Block::~Block(){
 	glDeleteBuffers(1, &EBO);
 	delete blockShaderptr;
 	blockShaderptr = nullptr;
-	filepath = NULL;
+	filepath1 = NULL;
+	filepath2 = NULL;
 }
 
 void Block::createVAO(){
@@ -83,8 +86,17 @@ vector<glm::vec3> Block::getBlockCoordinates(){
 }
 
 void Block::draw(){
-	glBindTexture(GL_TEXTURE_2D, boardTexture);
+	/*glBindTexture(GL_TEXTURE_2D, boardTexture);
+	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);*/
 	Block::blockShaderptr->Use();
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, boardTexture);
+	glUniform1i(glGetUniformLocation(blockShaderptr->Program, "ourTexture1"), 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);
+	glUniform1i(glGetUniformLocation(blockShaderptr->Program, "ourTexture2"), 1);
+	
 
 	glBindVertexArray(VAO);
 	//glDrawElements(GL_POINTS, blockIndices.size(), GL_UNSIGNED_INT, (GLvoid*)0);
@@ -149,24 +161,31 @@ void Block::loadTextures(){
 		2, 5, 6,
 		2, 6, 3,
 		3, 6, 7,
+
 		4, 8, 5,
 		5, 8, 9,
 		6, 10, 7,
 		7, 10, 11,
+
 		8, 12, 9,
 		9, 12, 13,
 		9, 13, 10,
 		10, 13, 14,
 		10, 14, 11,
 		11, 14, 15,
+
 		16, 5, 17,	// Sidewalk-Profile
 		17, 5, 6,
+
 		19, 10, 17,
 		17, 10, 6,
+
 		18, 9, 19,
 		19, 9, 10,
+
 		16, 5, 18,
 		18, 5, 9,
+
 		16, 18, 17,	// Sidewalk+Grass
 		17, 18, 19
 
@@ -197,6 +216,8 @@ void Block::loadTextures(){
 
 	glBindVertexArray(0); // Unbind VAO
 
+
+	/// Texture 1
 	glGenTextures(1, &boardTexture);
 	glBindTexture(GL_TEXTURE_2D, boardTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 	// Set the texture wrapping parameters
@@ -207,8 +228,31 @@ void Block::loadTextures(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// Load image, create texture and generate mipmaps
 	int width, height;
-	unsigned char* image = SOIL_load_image(filepath, &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char* image = SOIL_load_image(filepath1, &width, &height, 0, SOIL_LOAD_RGB);
+	if (image == '\0')
+	{
+		std::cout << "Unable to load image." << std::endl;
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 
+	/// Texture 2
+	glGenTextures(1, &sidewalkGrassTexture);
+	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	// Set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Load image, create texture and generate mipmaps
+	image = SOIL_load_image(filepath2, &width, &height, 0, SOIL_LOAD_RGB);
+	if (image == '\0')
+	{
+		std::cout << "Unable to load image." << std::endl;
+	}
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);

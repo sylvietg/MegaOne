@@ -25,9 +25,10 @@ class Block{
 		void loadTextures();
 
 	private:
-		static const char* filepath;
+		static const char* filepath1;
+		static const char* filepath2;
 		static GLuint boardTexture;
-		//static GLuint sidewalkGrassTexture;
+		static GLuint sidewalkGrassTexture;
 		static Shader *blockShaderptr;
 		static vector<glm::vec3> blockCoordinates;
 		static vector<GLuint> blockIndices;
