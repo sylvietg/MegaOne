@@ -1,8 +1,8 @@
 #include "Block.h"
 
-
-const char* Block::filepath1 = "../ThirdParty/Simple OpenGL Image Library/img_cheryl.jpg";
-const char* Block::filepath2 = "../ThirdParty/Simple OpenGL Image Library/img_test.png";
+const char* Block::filepath1 = "c:/users/mimi/desktop/template/megaone/vs2013/road.png";
+//const char* Block::filepath1 = "../ThirdParty/Simple OpenGL Image Library/test_rect.png";
+const char* Block::filepath2 = "c:/users/mimi/desktop/template/megaone/vs2013/sidewalk.png";
 vector<glm::vec3> Block::blockCoordinates;
 vector<GLuint> Block::blockIndices;
 Shader * Block::blockShaderptr = NULL;
@@ -85,9 +85,12 @@ vector<glm::vec3> Block::getBlockCoordinates(){
 	return blockCoordinates;
 }
 
+
+
 void Block::draw(){
 	/*glBindTexture(GL_TEXTURE_2D, boardTexture);
-	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);*/
+	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);
+	glBindTexture(GL_TEXTURE_2D, boardTexture);*/
 	Block::blockShaderptr->Use();
 
 	glActiveTexture(GL_TEXTURE0);
@@ -113,83 +116,44 @@ void Block::printCoordinates(){
 void Block::loadTextures(){
 	blockShaderptr = (new Shader("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag"));
 
-/*	GLfloat vertices[] = {
-		// Positions          // Colors			  // Texture Coords
-		0.5f, 0.5f, 0.0f,	 1.0f, 0.0f, 0.0f,		1.0f, 1.0f, // Top Right
-		0.5f, -0.5f, 0.0f,	 0.0f, 1.0f, 0.0f,		1.0f, 0.0f, // Bottom Right
-		-0.5f, -0.5f, 0.0f,	 0.0f, 0.0f, 1.0f,		0.0f, 0.0f, // Bottom Left
-		-0.5f, 0.5f, 0.0f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f  // Top Left 
-	};
-	GLuint indices[] = {  // Note that we start from 0!
-		0, 1, 3, // First Triangle
-		1, 2, 3  // Second Triangle
-	};*/
-
 	GLfloat vertices[] = {
-		// Positions			// Colors				// Texture Coords
-		-0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Lower, Row 1
-		-0.35f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		// Positions				// Colors				// Texture Coords
+		-0.5f, 0.5f, 0.0f,			1.0f, 0.0f, 1.0f,		0.0f, 1.0f,		// Road
+		-0.5f, -0.5f, 0.0f,			1.0f, 0.0f, 0.0f,		0.0f, 0.0f, 
+		0.5f, 0.5f, 0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
+		0.5f, -0.5f, 0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 0.0f,
+		
+		
+		-0.35f, 0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.1375f, 0.8625f,	//Sidewalk profile
+		-0.35f, -0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.1375f, 0.1375f,
+		0.35f, 0.35f, 0.0f,			1.0f, 1.0f, 0.0f,		0.8625f, 0.8625f,
+		0.35f, -0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.8625f, 0.1375f,
 
-		-0.5f, 0.35f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Lower, Row 2
-		-0.35f, 0.35f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, 0.35f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.35f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.35f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Lower, Row 3
-		-0.35f, -0.35f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, -0.35f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.35f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Lower, Row 4
-		-0.35f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-		-0.35f, 0.35f, 0.0125f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Upper Square
-		-0.35f, -0.35f, 0.0125f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, 0.35f, 0.0125f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.35f, -0.35f, 0.0125f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f
+		-0.35f, 0.35f, 0.0125f,		1.0f, 0.0f, 0.0f,		0.15f, 0.85,	// Upper Square
+		-0.35f, -0.35f, 0.0125f,	1.0f, 1.0f, 0.0f,		0.15f, 0.15f,
+		0.35f, 0.35f, 0.0125f,		0.0f, 0.0f, 1.0f,		0.85f, 0.85f,
+		0.35f, -0.35f, 0.0125f,		1.0f, 1.0f, 0.0f,		0.85f, 0.15f
+	
 
 	};
 
 	GLuint indices[] = {  // Note that we start from 0!
-		0, 4, 1, // Road
-		1, 4, 5,
-		1, 5, 2,
-		2, 5, 6,
-		2, 6, 3,
-		3, 6, 7,
-
-		4, 8, 5,
-		5, 8, 9,
-		6, 10, 7,
-		7, 10, 11,
-
-		8, 12, 9,
-		9, 12, 13,
-		9, 13, 10,
-		10, 13, 14,
-		10, 14, 11,
-		11, 14, 15,
-
-		16, 5, 17,	// Sidewalk-Profile
-		17, 5, 6,
-
-		19, 10, 17,
-		17, 10, 6,
-
-		18, 9, 19,
-		19, 9, 10,
-
-		16, 5, 18,
-		18, 5, 9,
-
-		16, 18, 17,	// Sidewalk+Grass
-		17, 18, 19
-
+		0, 1, 2, // Road
+		2,1,3,
+		8,4,9,
+		9,4,5,
+		9,5,11,
+		11,5,7,
+		11,7,10,
+		10,7,6,
+		10,6,8,
+		8,6,4,
+		8,9,10,
+		10,9,11
 	};
+
+
+
 	numInd = sizeof(indices);
 
 
@@ -218,6 +182,7 @@ void Block::loadTextures(){
 
 
 	/// Texture 1
+//	GLuint texture;
 	glGenTextures(1, &boardTexture);
 	glBindTexture(GL_TEXTURE_2D, boardTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 	// Set the texture wrapping parameters
@@ -257,4 +222,5 @@ void Block::loadTextures(){
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+
 }
