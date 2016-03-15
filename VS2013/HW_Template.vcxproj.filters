@@ -44,6 +44,9 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
@@ -52,12 +55,18 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
+    <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\BLOCK.png">
+    <Image Include="..\Images\road.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="..\Images\sidewalk.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="..\Images\BLOCK.png">
       <Filter>Resource Files\images</Filter>
     </Image>
   </ItemGroup>

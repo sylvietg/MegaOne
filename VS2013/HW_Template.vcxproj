@@ -74,6 +74,7 @@
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\BLOCK_FRAG_SHADER.frag" />
@@ -85,10 +86,12 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Utility.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\BLOCK.png" />
+    <Image Include="..\Images\BLOCK.png" />
+    <Image Include="..\Images\road.png" />
+    <Image Include="..\Images\sidewalk.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

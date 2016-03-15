@@ -1,20 +1,23 @@
 #include "Block.h"
 
-const char* Block::filepath1 = "c:/users/mimi/desktop/template/megaone/vs2013/road.png";
-//const char* Block::filepath1 = "../ThirdParty/Simple OpenGL Image Library/test_rect.png";
-const char* Block::filepath2 = "c:/users/mimi/desktop/template/megaone/vs2013/sidewalk.png";
+
+//const char* Block::filepath = "../ThirdParty/Simple OpenGL Image Library/test_block.png";
+const char* Block::filepath1 = "../Images/road.png";
+const char* Block::filepath2 = "../Images/sidewalk.png";
 vector<glm::vec3> Block::blockCoordinates;
 vector<GLuint> Block::blockIndices;
 Shader * Block::blockShaderptr = NULL;
 GLuint Block::boardTexture;
 GLuint Block::sidewalkGrassTexture;
 
+//default constructor possibly obsolete now
 Block::Block(){
 
 	/*	NOTE
 	*	The grid isn't used and isn't useful right now
 	*	It could come in handy when we use those bumpmaps(?)
 	*/
+	/*
 	GLfloat xDistance = 0.05f;
 	GLfloat yDistance = 0.05f;
 	GLfloat yDistanceCopy = 0.05f;
@@ -32,9 +35,38 @@ Block::Block(){
 	}
 	//createVAO could later be repurposed to actually create the VAO
 	//createVAO();
-
-	loadTextures();
+	*/
+	//loadTextures();
 }
+
+Block::Block(GLuint x, GLuint y){
+
+	/*	NOTE
+	*	The grid isn't used and isn't useful right now
+	*	It could come in handy when we use those bumpmaps(?)
+	*/
+	/*
+	GLfloat xDistance = 0.05f;
+	GLfloat yDistance = 0.05f;
+	GLfloat yDistanceCopy = 0.05f;
+	GLuint counter = 0;
+	glm::vec3 initialVector(-0.15f, -0.05f, 0.0f);
+	for (GLuint i = 0; i < BLOCK_HEIGHT; i++){
+	for (GLuint j = 0; j < BLOCK_WIDTH; j++){
+	blockCoordinates.push_back(glm::vec3(initialVector.x + xDistance, initialVector.y + yDistance, 0));
+	yDistance = yDistance + 0.05f;
+	blockIndices.push_back(counter);
+	counter++;
+	}
+	yDistance = yDistanceCopy;
+	xDistance = xDistance + 0.05f;
+	}
+	//createVAO could later be repurposed to actually create the VAO
+	//createVAO();
+	*/
+	loadTextures(x,y);
+}
+
 
 
 Block::~Block(){
@@ -66,31 +98,19 @@ void Block::createVAO(){
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	// tex coord attribute
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	//glEnableVertexAttribArray(1);
-
 	glBindVertexArray(0);
-
-	//glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(blockCoordinates[0])* blockCoordinates.size(), &blockCoordinates[0], GL_STATIC_DRAW);
-
-	//loadTextures();
-	//shader_program = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
 }
 
 vector<glm::vec3> Block::getBlockCoordinates(){
 	return blockCoordinates;
 }
 
-
-
 void Block::draw(){
-	/*glBindTexture(GL_TEXTURE_2D, boardTexture);
-	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);
-	glBindTexture(GL_TEXTURE_2D, boardTexture);*/
+	glBindTexture(GL_TEXTURE_2D, boardTexture);
+	
 	Block::blockShaderptr->Use();
 
 	glActiveTexture(GL_TEXTURE0);
@@ -99,10 +119,9 @@ void Block::draw(){
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, sidewalkGrassTexture);
 	glUniform1i(glGetUniformLocation(blockShaderptr->Program, "ourTexture2"), 1);
-	
+
 
 	glBindVertexArray(VAO);
-	//glDrawElements(GL_POINTS, blockIndices.size(), GL_UNSIGNED_INT, (GLvoid*)0);
 	glDrawElements(GL_TRIANGLES, numInd, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
@@ -113,50 +132,47 @@ void Block::printCoordinates(){
 	}
 }
 
-void Block::loadTextures(){
+void Block::loadTextures(GLuint x, GLuint y){
 	blockShaderptr = (new Shader("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag"));
+	GLfloat xoffset = x*1.f;
+	GLfloat yoffset = y*1.f;
+
 
 	GLfloat vertices[] = {
-		// Positions				// Colors				// Texture Coords
-		-0.5f, 0.5f, 0.0f,			1.0f, 0.0f, 1.0f,		0.0f, 1.0f,		// Road
-		-0.5f, -0.5f, 0.0f,			1.0f, 0.0f, 0.0f,		0.0f, 0.0f, 
-		0.5f, 0.5f, 0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-		0.5f, -0.5f, 0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 0.0f,
-		
-		
-		-0.35f, 0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.1375f, 0.8625f,	//Sidewalk profile
-		-0.35f, -0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.1375f, 0.1375f,
-		0.35f, 0.35f, 0.0f,			1.0f, 1.0f, 0.0f,		0.8625f, 0.8625f,
-		0.35f, -0.35f, 0.0f,		1.0f, 1.0f, 0.0f,		0.8625f, 0.1375f,
+		// Positions									// Colors				// Texture Coords
+		-0.5f + xoffset, 0.5f + yoffset,0.0f,			1.0f, 0.0f, 1.0f,		0.0f, 1.0f,		// Road
+		-0.5f + xoffset, -0.5f + yoffset,0.0f,			1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
+		0.5f + xoffset, 0.5f + yoffset,	0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
+		0.5f + xoffset, -0.5f + yoffset,0.0f,			0.0f, 0.0f, 1.0f,		1.0f, 0.0f,
 
-		-0.35f, 0.35f, 0.0125f,		1.0f, 0.0f, 0.0f,		0.15f, 0.85,	// Upper Square
-		-0.35f, -0.35f, 0.0125f,	1.0f, 1.0f, 0.0f,		0.15f, 0.15f,
-		0.35f, 0.35f, 0.0125f,		0.0f, 0.0f, 1.0f,		0.85f, 0.85f,
-		0.35f, -0.35f, 0.0125f,		1.0f, 1.0f, 0.0f,		0.85f, 0.15f
-	
 
+		-0.35f + xoffset, 0.35f + yoffset,0.0f,			1.0f, 1.0f, 0.0f,		0.1375f, 0.8625f,	//Sidewalk profile
+		-0.35f + xoffset, -0.35f + yoffset,0.0f,		1.0f, 1.0f, 0.0f,		0.1375f, 0.1375f,
+		0.35f + xoffset, 0.35f + yoffset,0.0f,			1.0f, 1.0f, 0.0f,		0.8625f, 0.8625f,
+		0.35f + xoffset, -0.35f + yoffset,0.0f,			1.0f, 1.0f, 0.0f,		0.8625f, 0.1375f,
+
+		-0.35f + xoffset, 0.35f + yoffset,0.0125f,		1.0f, 0.0f, 0.0f,		0.15f, 0.85f,	// Upper Square
+		-0.35f + xoffset, -0.35f + yoffset,0.0125f,		1.0f, 1.0f, 0.0f,		0.15f, 0.15f,
+		0.35f + xoffset, 0.35f + yoffset,0.0125f,		0.0f, 0.0f, 1.0f,		0.85f, 0.85f,
+		0.35f + xoffset, -0.35f + yoffset,0.0125f,		1.0f, 1.0f, 0.0f,		0.85f, 0.15f
 	};
 
 	GLuint indices[] = {  // Note that we start from 0!
 		0, 1, 2, // Road
-		2,1,3,
-		8,4,9,
-		9,4,5,
-		9,5,11,
-		11,5,7,
-		11,7,10,
-		10,7,6,
-		10,6,8,
-		8,6,4,
-		8,9,10,
-		10,9,11
+		2, 1, 3,
+		8, 4, 9,
+		9, 4, 5,
+		9, 5, 11,
+		11, 5, 7,
+		11, 7, 10,
+		10, 7, 6,
+		10, 6, 8,
+		8, 6, 4,
+		8, 9, 10,
+		10, 9, 11
 	};
 
-
-
 	numInd = sizeof(indices);
-
-
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -182,7 +198,7 @@ void Block::loadTextures(){
 
 
 	/// Texture 1
-//	GLuint texture;
+	//	GLuint texture;
 	glGenTextures(1, &boardTexture);
 	glBindTexture(GL_TEXTURE_2D, boardTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 	// Set the texture wrapping parameters
@@ -222,5 +238,4 @@ void Block::loadTextures(){
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-
 }

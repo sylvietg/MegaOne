@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../VS2013/Block.h"
+#include "../VS2013/World.h"
 
 #include <vector>
 #include <string>
@@ -43,13 +44,6 @@ glm::mat4 model_matrix;
 
 GLfloat point_size = 3.0f;
 
-// An array of 3 vectors which represents 3 vertices
-static const GLfloat g_vertex_buffer_data[] = {
-	-1.0f, -1.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-};
-
 ///Handle the keyboard input
 void keyPressed(GLFWwindow *_window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -67,7 +61,7 @@ bool initialize() {
 
 	/// Create a window of size 640x480 and with title "Lecture 2: First Triangle"
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-	window = glfwCreateWindow(800, 800, "COMP371: Assignment 1", NULL, NULL);
+	window = glfwCreateWindow(800, 800, "COMP371: Team 8 Project", NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
@@ -215,7 +209,8 @@ int main() {
 	Block block;
 	Block* blockptr = &block;
 
-
+	World world;
+	World* worldptr = &world;
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
 
@@ -225,15 +220,12 @@ int main() {
 		glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
 		glPointSize(point_size);
 
-		//glUseProgram(shader_program);
-
 		//Pass the values of the three matrices to the shaders
 		glUniformMatrix4fv(proj_matrix_id, 1, GL_FALSE, glm::value_ptr(proj_matrix));
 		glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, glm::value_ptr(view_matrix));
 		glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, glm::value_ptr(model_matrix));
 
-		blockptr->draw();
-
+		worldptr->Draw();
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we've been drawing onto the display

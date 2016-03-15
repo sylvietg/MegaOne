@@ -1,36 +1,19 @@
 #pragma once
+#include "Block.h"
 #include <vector>
 
-class Camera;
-class Model;
-/*
-class WaterModel;
-class ObjectModel;
-class Animation;
-class AnimationKey;
-class ParticleSystem;
-class BSpline;
-*/
+//size of the world in blocks, the world is currently a 2x2 world (4 blocks)
+#define WORLD_HEIGHT 2
+#define WORLD_LENGTH 2
+
 class World
 {
 public:
 	World();
 	~World();
-
-	static World* GetInstance();
-
-	void Update(float dt);
 	void Draw();
 
-	void LoadScene(const char * scene_path);
-
-	const Camera* GetCurrentCamera() const;
-
 private:
-	static World* instance;
-
-	std::vector<Model*> mModel;
-	std::vector<Camera*> mCamera;
-	unsigned int mCurrentCamera;
-
+	//hold the blocks to be drawn;
+	static vector<Block*> blocks;
 };

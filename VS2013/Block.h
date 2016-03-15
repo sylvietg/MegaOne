@@ -6,7 +6,6 @@
 #include <iostream>
 #include "Shader.h"
 #include "SOIL.h"
-#include "Utility.h"
 
 using namespace std;
 #define BLOCK_WIDTH 20
@@ -16,24 +15,27 @@ using namespace std;
 class Block{
 	public:
 		Block();
+		Block(GLuint,GLuint);
 		~Block();
 
 		static Block* getBlock();
 		vector<glm::vec3> getBlockCoordinates();
 		void draw();
 		void printCoordinates();
-		void loadTextures();
+		void loadTextures(GLuint,GLuint);
 
 	private:
 		static const char* filepath1;
 		static const char* filepath2;
+		//static const char* filepath;
 		static GLuint boardTexture;
 		static GLuint sidewalkGrassTexture;
+
 		static Shader *blockShaderptr;
 		static vector<glm::vec3> blockCoordinates;
 		static vector<GLuint> blockIndices;
-		GLuint numInd;
 		GLuint VAO, VBO, EBO;
 		void createVAO();
+		GLuint numInd;
 		GLuint shader_program;
 };
