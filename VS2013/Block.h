@@ -34,8 +34,9 @@ class Block{
 		static Shader *blockShaderptr;
 		static vector<glm::vec3> blockCoordinates;
 		static vector<GLuint> blockIndices;
-		GLuint VAO, VBO, EBO;
+		GLuint VAO, VBO1, EBO1, VBO2, EBO2;
 		void createVAO();
-		GLuint numInd;
+		GLuint roadIndSz;
+		GLuint sidewalkIndSz;
 		GLuint shader_program;
 };
