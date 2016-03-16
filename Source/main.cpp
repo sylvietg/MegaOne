@@ -12,6 +12,7 @@
 #include <math.h>
 #include "../VS2013/Block.h"
 #include "../VS2013/World.h"
+#include "../VS2013/Building.h"
 
 #include <vector>
 #include <string>
@@ -28,7 +29,8 @@ using namespace std;
 
 GLFWwindow* window = 0x00;
 
-GLuint shader_program = 0;
+GLuint building_shader = 0;
+GLuint block_shader = 0;
 
 GLuint view_matrix_id = 0;
 GLuint model_matrix_id = 0;
@@ -39,7 +41,6 @@ glm::mat4 proj_matrix;
 glm::mat4 view_matrix;
 glm::mat4 model_matrix;
 
-
 //GLuint VBO, VAO, EBO;
 
 GLfloat point_size = 3.0f;
@@ -48,9 +49,32 @@ GLfloat point_size = 3.0f;
 void keyPressed(GLFWwindow *_window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+		view_matrix = glm::translate(view_matrix, glm::vec3(0.5f, 0.f, 0.f));
+	}
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+		view_matrix = glm::translate(view_matrix, glm::vec3(-0.5f, 0.f, 0.f));
+	}
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		view_matrix = glm::translate(view_matrix, glm::vec3(0.f, -0.5f, 0.f));
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		view_matrix = glm::translate(view_matrix, glm::vec3(0.f, 0.5f, 0.f));
+	}
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		model_matrix = glm::rotate(model_matrix, glm::radians(15.0f), glm::vec3(0.0, 0.0, 0.05));
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		model_matrix = glm::rotate(model_matrix, glm::radians(15.0f), glm::vec3(0.05, 0.0, 0.0));
 	return;
 }
 
+void windowResize(GLFWwindow* window, int width, int height){
+	GLfloat aspectRatio = width / height;
+	glViewport(0, 0, width, height);
+	//from http://stackoverflow.com/questions/26831962/opengl-orthographic-projection-oy-resizing
+	proj_matrix = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
+}
 
 bool initialize() {
 	/// Initialize GL context and O/S window using the GLFW helper library
@@ -71,6 +95,7 @@ bool initialize() {
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 	///Register the keyboard callback function: keyPressed(...)
+	glfwSetWindowSizeCallback(window, windowResize);
 	glfwSetKeyCallback(window, keyPressed);
 
 	glfwMakeContextCurrent(window);
@@ -206,26 +231,39 @@ GLuint loadShaders(std::string vertex_shader_path, std::string fragment_shader_p
 int main() {
 	initialize();
 
-	Block block;
-	Block* blockptr = &block;
-
 	World world;
 	World* worldptr = &world;
+
+	building buildings;
+	building* buildingsptr = &buildings;
+	buildingsptr->BuildCity();
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
 
+	//why does this take priority?
+	//shader_program = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
+	//shader_program = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
+	building_shader = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
+	block_shader = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
 		glPointSize(point_size);
 
+		//glUseProgram(shader_program);
 		//Pass the values of the three matrices to the shaders
 		glUniformMatrix4fv(proj_matrix_id, 1, GL_FALSE, glm::value_ptr(proj_matrix));
 		glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, glm::value_ptr(view_matrix));
 		glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, glm::value_ptr(model_matrix));
 
+		//glUseProgram(building_shader);
+		//buildingsptr->Draw();
+
+		glUseProgram(block_shader);
 		worldptr->Draw();
+
+
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we've been drawing onto the display
