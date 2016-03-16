@@ -25,11 +25,11 @@ class Skybox
 		static vector<glm::vec3> cubeV;
 		static vector<GLuint> cubeInd;
 		static vector<const char*> filepath;
-		GLint textureID;
+		GLint faceTex;
 		GLuint VAO, VBO, EBO;
-		static Shader *blockShaderptr;
+		static Shader *skyShaderptr;
 		GLuint shader_program;
-		
+		void loadIndices();
 };
 
 #endif /* SKYBOX_H_ */
