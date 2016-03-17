@@ -244,8 +244,8 @@ int main() {
 	//why does this take priority?
 	//shader_program = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
 	//shader_program = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
-	building_shader = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
-	block_shader = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
+	//building_shader = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
+	//block_shader = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
 	//sky_shader = loadShaders("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag");
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear

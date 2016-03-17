@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Sun.h"
 #include "Skybox.h"
+#include "Tree.h"
 #include <vector>
 #include "Building.h"
 //size of the world in blocks, the world is currently a 2x2 world (4 blocks)
@@ -21,4 +22,5 @@ private:
 	static Block* blockptr;
 	static vector<Block*> blocks;
 	Skybox* skyptr;
+	Tree* treeptr;
 };

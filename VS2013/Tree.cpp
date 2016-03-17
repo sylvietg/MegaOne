@@ -10,14 +10,23 @@ Tree::Tree(GLfloat w, GLfloat h, const char* filepath)
 	this->w = w;
 	this->h = h;
 	this->filepath = filepath;
-	treeShaderptr = (new Shader("../Source/TREE_VERTEX_SHADER.vs", "../Source/TREE_FRAG_SHADER.frag"));
-	shader_program = treeShaderptr->Program;
+	//treeShaderptr = (new Shader("../Source/TREE_VERTEX_SHADER.vs", "../Source/TREE_FRAG_SHADER.frag"));
+	//shader_program = treeShaderptr->Program;
 	
-	defineVertices();
-	
+//	defineVertices();
+	treeV = {
+		// Positions         // Texture Coords (swapped y coordinates because texture is flipped upside down)
+		-0.5f, 0.5f, 0.0f,	//0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, //0.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, //1.0f, 1.0f,
+
+		0.5f, 0.5f, 0.0f, //1.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, //0.0f, 0.0f,
+		0.5f, -0.5f, 0.0f//, 1.0f, 0.0f
+	};
 	treeInd = {
 		0,1,2,
-		2,1,3
+		3,4,5
 	};
 
 	createBuffers();
@@ -47,7 +56,7 @@ void Tree::writeColorCoord()
 
 void Tree::defineVertices()
 {
-	treeV.push_back(-(w / 2)); // Top left
+	/*treeV.push_back(-(w / 2)); // Top left
 	treeV.push_back(h);
 	treeV.push_back(0.0f);
 
@@ -66,7 +75,7 @@ void Tree::defineVertices()
 	treeV.push_back(0.0f);
 
 	treeV.push_back(w / 2); // Bottom right
-	treeV.push_back(1.0f);
+	treeV.push_back(0.0f);
 	treeV.push_back(0.0f);
 
 	writeColorCoord();	// Color coordinates
@@ -81,7 +90,18 @@ void Tree::defineVertices()
 	writeColorCoord();	// Color coordinates
 
 	treeV.push_back(1.0f);	// Texture coordinates
-	treeV.push_back(1.0f);
+	treeV.push_back(1.0f);*/
+
+	treeV = {
+		// Positions         // Texture Coords (swapped y coordinates because texture is flipped upside down)
+		-0.5f, 0.5f, 0.0f,	//0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, //0.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, //1.0f, 1.0f,
+
+		0.5f, 0.5f, 0.0f, //1.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, //0.0f, 0.0f,
+		0.5f, -0.5f, 0.0f//, 1.0f, 0.0f
+	};
 }
 
 void Tree::createBuffers()
@@ -94,36 +114,35 @@ void Tree::createBuffers()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * treeV.size(), &treeV, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(treeV[0]) * treeV.size(), &treeV[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, treeInd.size(), &treeInd, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(treeV[0]) * treeInd.size(), &treeInd[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0); // Position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0); // Position
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat))); // Color
+/*	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat))); // Color
+	glEnableVertexAttribArray(1);*/
+
+	/*glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat))); // Texture
 	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat))); // Texture
-	glEnableVertexAttribArray(2);
-
+	*/
 	glBindVertexArray(0);
 }
 
 void Tree::draw()
 {
-//	treeShaderptr->Use;
+	cout << "size" << treeInd.size() << endl;
+//	treeShaderptr->Use();
 //	loadTexture();
 //	createBuffers();
-	glDepthMask(GL_FALSE);
 	glBindVertexArray(VAO);
-	//glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-//	glUniform1i(glGetUniformLocation(shader_program, "ourTexture"), 0);
+	glUniform1i(glGetUniformLocation(treeShaderptr->Program, "ourTexture"), 0);
 	glDrawElements(GL_TRIANGLES, treeInd.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-	glDepthMask(GL_TRUE);
 }
 
 GLuint Tree::getShaderProgram()
@@ -133,11 +152,13 @@ GLuint Tree::getShaderProgram()
 
 void Tree::loadTexture()
 {
+	treeShaderptr = (new Shader("../Source/TREE_VERTEX_SHADER.vs", "../Source/TREE_FRAG_SHADER.frag"));
+
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 	// Set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	// Set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
