@@ -22,5 +22,5 @@ private:
 	static Block* blockptr;
 	static vector<Block*> blocks;
 	Skybox* skyptr;
-	Tree* treeptr;
+	static Tree* treeptr;
 };
