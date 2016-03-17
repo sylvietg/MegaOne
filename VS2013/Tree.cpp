@@ -134,7 +134,7 @@ void Tree::createBuffers()
 void Tree::draw()
 {
 	cout << "size" << treeInd.size() << endl;
-//	treeShaderptr->Use();
+	treeShaderptr->Use();
 //	loadTexture();
 //	createBuffers();
 	glBindVertexArray(VAO);

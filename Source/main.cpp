@@ -235,9 +235,9 @@ int main() {
 	World world;
 	World* worldptr = &world;
 
-	building buildings;
+/*	building buildings;
 	building* buildingsptr = &buildings;
-	buildingsptr->BuildCity();
+	buildingsptr->BuildCity();*/
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
 
@@ -262,7 +262,7 @@ int main() {
 		//glUseProgram(building_shader);
 		//buildingsptr->Draw();
 
-		glUseProgram(block_shader);
+		//glUseProgram(block_shader);
 		worldptr->Draw();
 
 

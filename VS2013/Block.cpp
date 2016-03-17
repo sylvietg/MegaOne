@@ -60,7 +60,7 @@ vector<glm::vec3> Block::getBlockCoordinates(){
 void Block::draw(){
 	//glBindTexture(GL_TEXTURE_2D, boardTexture);
 
-	//blockShaderptr->Use();
+	blockShaderptr->Use();
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, boardTexture);
