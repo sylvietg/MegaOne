@@ -246,7 +246,7 @@ int main() {
 	//shader_program = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
 	building_shader = loadShaders("../Source/COMP371_hw1.vs", "../Source/COMP371_hw1.fss");
 	block_shader = loadShaders("../Source/BLOCK_VERTEX_SHADER.vs", "../Source/BLOCK_FRAG_SHADER.frag");
-	sky_shader = loadShaders("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag");
+	//sky_shader = loadShaders("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag");
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

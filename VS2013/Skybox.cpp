@@ -5,40 +5,45 @@ vector<GLuint> Skybox::cubeInd;
 vector<const char*> Skybox::filepath;
 Shader* Skybox::skyShaderptr = NULL;
 
-Skybox::Skybox()
+Skybox::Skybox(GLuint size)
 {
+	this->size = size;
+
 	cubeV = {         
-		glm::vec3(-1.0f, 1.0f, -1.0f), 
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(1.0f, 1.0f, -1.0f),
-		glm::vec3(1.0f, -1.0f, -1.0f),
+		glm::vec3(-2.0f* size, 2.0f* size, -2.0f* size),
+		glm::vec3(-2.0f* size, -2.0f* size, -2.0f* size),
+		glm::vec3(2.0f*size, 2.0f*size, -2.0f*size),
+		glm::vec3(2.0f*size, -2.0f*size, -2.0f*size),
 		
-		glm::vec3(-1.0f, -1.0f, 1.0f),
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(-1.0f, 1.0f, 1.0f),
-		glm::vec3(-1.0f, 1.0f, -1.0f),
+		glm::vec3(-2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(-2.0f*size, -2.0f*size, -2.0f*size),
+		glm::vec3(-2.0f*size, 2.0f*size, 2.0f*size),
+		glm::vec3(-2.0f*size, 2.0f*size, -2.0f*size),
 	
-		glm::vec3(1.0f, -1.0f, -1.0f),
-		glm::vec3(1.0f, -1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, -1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(2.0f*size, -2.0f*size, -2.0f*size),
+		glm::vec3(2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(2.0f*size, 2.0f*size, -2.0f*size),
+		glm::vec3(2.0f*size, 2.0f*size, 2.0f*size),
 	
-		glm::vec3(-1.0f, -1.0f, 1.0f),
-		glm::vec3(-1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, -1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(-2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(-2.0f*size, 2.0f*size, 2.0f*size),
+		glm::vec3(2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(2.0f*size, 2.0f*size, 2.0f*size),
 
-		glm::vec3(-1.0f, 1.0f, -1.0f),
-		glm::vec3(1.0f, 1.0f, -1.0f),
-		glm::vec3(-1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(-2.0f*size, 2.0f*size, -2.0f*size),
+		glm::vec3(2.0f*size, 2.0f*size, -2.0f*size),
+		glm::vec3(-2.0f*size, 2.0f*size, 2.0f*size),
+		glm::vec3(2.0f*size, 2.0f*size, 2.0f*size),
 
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(-1.0f, -1.0f, 1.0f),
-		glm::vec3(-1.0f, -1.0f, 1.0f),
-		glm::vec3(1.0f, -1.0f, -1.0f)
+		glm::vec3(-2.0f*size, -2.0f*size, -2.0f*size),
+		glm::vec3(-2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(-2.0f*size, -2.0f*size, 2.0f*size),
+		glm::vec3(2.0f*size, -2.0f*size, -2.0f)
 	};
 	
+	skyShaderptr = (new Shader("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag"));
+	shader_program = skyShaderptr->Program;
+
 	loadIndices();
 	createBuffers();
 	loadTexture();
@@ -72,7 +77,8 @@ void Skybox::loadTexture()
 
 void Skybox::createTexture()
 {
-	skyShaderptr = (new Shader("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag"));
+	//skyShaderptr = (new Shader("../Source/SKY_VERTEX_SHADER.vs", "../Source/SKY_FRAG_SHADER.frag"));
+	//shader_program = skyShaderptr->Program;
 
 	int width, height;
 	unsigned char* image;
@@ -146,4 +152,9 @@ void Skybox::loadIndices()
 		cubeInd.push_back(1 + (i * 4));
 		cubeInd.push_back(3 + (i * 4));
 	}
+}
+
+GLuint Skybox::getShaderProgram()
+{
+	return shader_program;
 }

@@ -8,7 +8,7 @@ World::World(){
 	//set the camera here
 	//set sun here: note current sun.cpp doesnt work
 	sunptr = new Sun();
-	skyptr = new Skybox();
+	skyptr = new Skybox(1);
 
 	//building buildings;
 	buildingsptr = new building;
@@ -40,13 +40,15 @@ void World::Draw(){
 	//gotta find a more efficient way to draw the blocks
 	//sunptr->Draw();
 
-	skyptr->draw();
+	//skyptr->draw();
 
-	buildingsptr->Draw();
+	//buildingsptr->Draw();
 
 	for (int i = 0; i < blocks.size(); i++){
 		blocks.at(i)->draw();
 	}
+
+	
 
 
 }

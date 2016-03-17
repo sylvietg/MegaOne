@@ -15,21 +15,23 @@ using namespace std;
 class Skybox
 {
 	public:
-		Skybox();
+		Skybox(GLuint size);
 		~Skybox();
 		void loadTexture();
 		void createTexture();
 		void createBuffers();
 		void draw();
+		GLuint getShaderProgram();
 	private:
 		static vector<glm::vec3> cubeV;
 		static vector<GLuint> cubeInd;
 		static vector<const char*> filepath;
-		GLint faceTex;
+		GLuint faceTex;
 		GLuint VAO, VBO, EBO;
 		static Shader *skyShaderptr;
 		GLuint shader_program;
 		void loadIndices();
+		GLuint size;
 };
 
 #endif /* SKYBOX_H_ */
